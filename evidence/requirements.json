@@ -1,4 +1,150 @@
 {
   "version": 1,
-  "requirements": []
+  "requirements": [
+    {
+      "id": "DH-ATTENDANCE-001",
+      "module": "attendance-self-all",
+      "title": "authenticated user lands on the self attendance page",
+      "acceptanceCriteria": [
+        "The attendance self-view page is reachable after a valid authentication session is established",
+        "The page title or heading identifies the attendance context"
+      ],
+      "preconditions": [
+        "A valid synthetic test user credential is available via environment variable",
+        "A storage-state session has been established for that user",
+        "The application base URL for the target environment is configured"
+      ],
+      "expectedOutcome": "The attendance self-view page renders without an error state and the authenticated user's identity or the page heading is visible",
+      "type": "SMOKE",
+      "priority": "P0",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Derived from application URL https://vyaguta.lftechnology.com/attendance/self/all — no formal requirement doc available. Requires owner approval and auth gap resolution before promotion to active."
+    },
+    {
+      "id": "DH-ATTENDANCE-002",
+      "module": "attendance-self-all",
+      "title": "self attendance view displays a list of attendance records",
+      "acceptanceCriteria": [
+        "The page contains a table, list, or grid element representing attendance records",
+        "At least one record row or an explicit empty-state message is present"
+      ],
+      "preconditions": [
+        "DH-ATTENDANCE-001 preconditions met",
+        "The authenticated test user has at least one attendance record, or the application renders a verified empty-state message when no records exist"
+      ],
+      "expectedOutcome": "A record list or empty-state indicator is visible; no unhandled error message is displayed",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Derived from application URL path segment 'all' implying a collection view. Exact column structure, pagination behaviour, and empty-state copy are unverified — requires browser access after auth is resolved."
+    },
+    {
+      "id": "DH-ATTENDANCE-003",
+      "module": "attendance-self-all",
+      "title": "unauthenticated user is redirected away from the self attendance page",
+      "acceptanceCriteria": [
+        "A request to the attendance self-view URL without a valid session does not render the attendance data",
+        "The user is redirected to a login or access-denied page"
+      ],
+      "preconditions": [
+        "No active session cookie or token is present in the browser context",
+        "The application base URL for the target environment is configured"
+      ],
+      "expectedOutcome": "The browser lands on a login or error page, not the attendance record view",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "negative",
+      "status": "draft",
+      "source": "Derived from the stated requirement that the application URL requires authentication. Exact redirect target URL and page copy are unverified — requires browser access after auth mechanism is confirmed."
+    },
+    {
+      "id": "AE-LOGIN-001",
+      "module": "login",
+      "title": "login page loads and displays the authentication form",
+      "acceptanceCriteria": [
+        "Navigating to the login URL returns a page that renders without an error state",
+        "An email input, a password input, and a submit control are visible on the page"
+      ],
+      "preconditions": [
+        "The application base URL https://www.automationexercise.com/ is reachable",
+        "No authenticated session is present in the browser context"
+      ],
+      "expectedOutcome": "The login page renders with its form elements present and no error state visible",
+      "type": "SMOKE",
+      "priority": "P0",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Owner specification — login feature, automationexercise.com. Selectors verified via DISCOVER 2026-10-08. Owner approved 2026-10-08."
+    },
+    {
+      "id": "AE-LOGIN-002",
+      "module": "login",
+      "title": "valid credentials result in an authenticated session",
+      "acceptanceCriteria": [
+        "Submitting the pre-existing test account email and the password from TEST_PASSWORD results in a successful authentication",
+        "After submission the user is no longer on the login page and no login-error indicator is visible"
+      ],
+      "preconditions": [
+        "The test account configured via the TEST_EMAIL environment variable exists on the application",
+        "The TEST_PASSWORD environment variable is set to the correct password for that account",
+        "No authenticated session is present in the browser context at the start of the test",
+        "AE-LOGIN-001 preconditions met"
+      ],
+      "expectedOutcome": "The browser navigates away from the login page; the Logout nav link becomes visible, confirming an authenticated session.",
+      "type": "SMOKE",
+      "priority": "P0",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Owner specification — core happy-path login, automationexercise.com. CAPTCHA not enforced; Logout link used as authenticated indicator. Verified via DISCOVER 2026-10-08. Owner approved 2026-10-08."
+    },
+    {
+      "id": "AE-LOGIN-003",
+      "module": "login",
+      "title": "invalid credentials display an error message and deny access",
+      "acceptanceCriteria": [
+        "Submitting an email and password combination that does not match any registered account does not grant an authenticated session",
+        "A visible error message is displayed on the login page",
+        "The user remains on the login page after the failed attempt"
+      ],
+      "preconditions": [
+        "The application base URL is reachable",
+        "The email used for this test does not correspond to a valid account, or the password is intentionally incorrect",
+        "No authenticated session is present in the browser context"
+      ],
+      "expectedOutcome": "Error message 'Your email or password is incorrect!' is displayed; no session established; user remains on /login.",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "negative",
+      "status": "active",
+      "source": "Owner specification — negative login path, automationexercise.com. Error text verified via DISCOVER 2026-10-08. Owner approved 2026-10-08."
+    },
+    {
+      "id": "AE-LOGIN-004",
+      "module": "login",
+      "title": "submitting an empty login form shows a validation error",
+      "acceptanceCriteria": [
+        "Activating the submit control while both the email and password fields are empty produces a visible validation indicator",
+        "No authenticated session is established"
+      ],
+      "preconditions": [
+        "The login page is rendered with the form in its default empty state",
+        "No authenticated session is present in the browser context"
+      ],
+      "expectedOutcome": "A validation error or browser-native field constraint is visible; the user remains on the login page without a session",
+      "type": "REGRESSION",
+      "priority": "P2",
+      "tier": "e2e",
+      "path": "negative",
+      "status": "active",
+      "source": "Owner specification — empty-form edge case, automationexercise.com. Client-side HTML5 validation confirmed via DISCOVER 2026-10-08. Owner approved 2026-10-08."
+    }
+  ]
 }

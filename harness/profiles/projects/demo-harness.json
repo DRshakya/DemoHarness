@@ -1,0 +1,38 @@
+{
+  "key": "demo-harness",
+  "displayName": "DemoHarness",
+  "owner": "Dipankar Shakya",
+  "repo": "<vyaguta app repo URL — confirm before first sync>",
+
+  "adapter": "playwright",
+  "language": "typescript",
+  "projectName": "demo-harness-automation",
+
+  "pattern": "helper-first",
+  "patternReason": "New project — helper-first from the start, no existing automation to migrate",
+  "patternDivergence": [],
+
+  "paths": {
+    "testRoot": "playwright",
+    "configRoot": "playwright/configs",
+    "commandRoot": "playwright/support/helpers",
+    "specGlob": "playwright/tests/**/*.spec.ts"
+  },
+
+  "wiring": {
+    "packageManager": "npm",
+    "workspacePackage": false,
+    "verifyScript": "npm run verify"
+  },
+
+  "strategy": {
+    "auth": "storage-state",
+    "testData": "fresh",
+    "credentialSource": "ci-secret"
+  },
+
+  "adapters": {
+    "claude": { "enabled": true },
+    "copilot": { "enabled": false }
+  }
+}

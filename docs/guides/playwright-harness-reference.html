@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LF Playwright Harness — Reference Guide</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg:          #F7F9FC;
+    --surface:     #FFFFFF;
+    --surface-2:   #EEF3FA;
+    --border:      #D8E2EF;
+    --accent:      #0284C7;
+    --accent-soft: #E0F2FE;
+    --text:        #0C1B33;
+    --text-2:      #4A5568;
+    --text-3:      #7A8A9E;
+    --block:       #DC2626;
+    --block-soft:  #FEF2F2;
+    --graded:      #D97706;
+    --graded-soft: #FFFBEB;
+    --green:       #059669;
+    --green-soft:  #ECFDF5;
+    --nav-w:       240px;
+    --mono:        'JetBrains Mono','Cascadia Code',monospace;
+    --sans:        'Inter',system-ui,sans-serif;
+    --display:     'Plus Jakarta Sans','Inter',sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#0A1628;--surface:#111E35;--surface-2:#162040;--border:#1E2E4A;
+      --accent:#38BDF8;--accent-soft:#0B2540;--text:#E8EFFE;--text-2:#94A3B8;
+      --text-3:#64748B;--block:#F87171;--block-soft:#1C1010;
+      --graded:#FCD34D;--graded-soft:#1C1800;--green:#34D399;--green-soft:#0B1C15;
+    }
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.75;display:flex;min-height:100vh}
+
+  /* sidebar */
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--nav-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;z-index:10}
+  .sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+  .sidebar-logo .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .sidebar-logo h2{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);line-height:1.3}
+  .nav-section{padding:16px 0;border-bottom:1px solid var(--border)}
+  .nav-section:last-child{border-bottom:none}
+  .nav-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);padding:0 20px 8px}
+  .nav-link{display:block;padding:6px 20px;font-size:13.5px;color:var(--text-2);text-decoration:none;border-left:2px solid transparent;transition:color .15s,background .15s}
+  .nav-link:hover{color:var(--accent);background:var(--accent-soft)}
+  .nav-link.sub{padding-left:32px;font-size:12.5px}
+  .nav-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500}
+
+  /* main */
+  .main{margin-left:var(--nav-w);flex:1;padding:0 48px 80px;max-width:calc(var(--nav-w) + 780px + 96px)}
+
+  /* hero */
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+  .hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .hero h1{font-family:var(--display);font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;color:var(--text);text-wrap:balance;margin-bottom:16px}
+  .hero-sub{font-size:17px;color:var(--text-2);max-width:600px;line-height:1.7;margin-bottom:28px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+  .meta-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;font-size:12.5px;color:var(--text-2)}
+  .meta-chip strong{color:var(--text);font-weight:600}
+
+  /* sections */
+  section{margin-bottom:64px;scroll-margin-top:32px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .section-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .icon-blue{background:#EFF6FF}
+  .icon-green{background:var(--green-soft)}
+  .icon-red{background:var(--block-soft)}
+  .section-header h2{font-family:var(--display);font-size:22px;font-weight:700;color:var(--text)}
+  h3{font-family:var(--display);font-size:16px;font-weight:700;color:var(--text);margin:32px 0 10px}
+  p{margin-bottom:14px;color:var(--text-2)}
+  p strong{color:var(--text)}
+
+  /* boxes */
+  .def-box{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:24px;font-size:14px}
+  .def-box .def-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .def-box p{color:var(--text);margin:0}
+  .tip{background:var(--green-soft);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;font-size:13.5px;color:var(--text)}
+  .tip strong{color:var(--green)}
+  .warn{background:var(--graded-soft);border-left:3px solid var(--graded);border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;font-size:13.5px;color:var(--text)}
+  .warn strong{color:var(--graded)}
+
+  /* cards */
+  .card-grid{display:flex;flex-direction:column;gap:20px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px}
+  .card-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .card-badge{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:5px;font-weight:500;white-space:nowrap;flex-shrink:0;margin-top:2px}
+  .badge-prompt{background:#F3E8FF;color:#7C3AED}
+  .badge-prewrite{background:#ECFDF5;color:#065F46}
+  .badge-postwrite{background:#FFF7ED;color:#C2410C}
+  .badge-stop{background:#F8FAFC;color:#334155}
+  .card-title{font-family:var(--mono);font-size:13.5px;font-weight:500;color:var(--text)}
+  .card p{font-size:13.5px;margin:0 0 8px}
+  .card p:last-child{margin-bottom:0}
+  .card-tip{margin-top:12px;padding:10px 14px;background:var(--surface-2);border-radius:6px;font-size:12.5px;color:var(--text-2);border:1px solid var(--border)}
+  .card-tip strong{color:var(--accent)}
+
+  /* agent cards */
+  .agent-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px}
+  .agent-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .role-pill{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-weight:500}
+  .role-GATHER{background:#EFF6FF;color:#1D4ED8}
+  .role-DISCOVER{background:#F3E8FF;color:#7C3AED}
+  .role-BUILD{background:var(--green-soft);color:#065F46}
+  .role-EVALUATE{background:var(--block-soft);color:#991B1B}
+  .role-DIAGNOSE{background:var(--graded-soft);color:#92400E}
+  .role-SHIP{background:#F0FDF4;color:#166534}
+  .role-MAINTAIN{background:#F8FAFC;color:#334155}
+  .agent-name{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text)}
+  .agent-card p{font-size:13.5px}
+  .agent-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .meta-tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 10px;border:1px solid var(--border);border-radius:5px;color:var(--text-3);background:var(--surface-2);font-family:var(--mono)}
+  .meta-tag .dot{color:var(--accent)}
+
+  /* rule cards */
+  .rule-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .rule-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border)}
+  .sev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .dot-block{background:var(--block)}
+  .dot-grade{background:var(--graded)}
+  .rule-id{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);flex:1}
+  .sev-badge{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-weight:600}
+  .sev-block{background:var(--block-soft);color:var(--block)}
+  .sev-grade{background:var(--graded-soft);color:var(--graded)}
+  .rule-body{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+  .rule-field{display:flex;flex-direction:column;gap:3px}
+  .rule-field.full{grid-column:1/-1}
+  .field-label{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);font-weight:600}
+  .field-val{font-size:13px;color:var(--text-2)}
+  .field-val code{font-family:var(--mono);font-size:12px;color:var(--text)}
+  .field-val.bad{color:var(--block);font-style:italic}
+  .field-val.good{color:var(--green)}
+
+  /* example blocks */
+  .example{margin:14px 0 4px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+  .example-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;font-weight:600}
+  .ex-bad{background:var(--block-soft);color:var(--block)}
+  .ex-good{background:var(--green-soft);color:var(--green)}
+  .ex-neutral{background:var(--surface-2);color:var(--text-3)}
+  .example pre{border:none;border-radius:0;margin:0;background:var(--surface-2);font-size:12px;padding:12px 14px}
+
+  /* lifecycle */
+  .lifecycle{display:flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:20px 0 28px}
+  .lc-step{flex:1;min-width:90px;padding:14px 10px;text-align:center;border-right:1px solid var(--border)}
+  .lc-step:last-child{border-right:none}
+  .lc-num{font-family:var(--mono);font-size:10px;color:var(--text-3);margin-bottom:4px}
+  .lc-name{font-size:11px;font-weight:700;color:var(--text)}
+  .lc-owner{font-family:var(--mono);font-size:10px;color:var(--accent);margin-top:4px}
+
+  /* score table */
+  .score-table{width:100%;border-collapse:collapse;font-size:13px;display:block;overflow-x:auto;margin:14px 0}
+  .score-table th{text-align:left;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);font-weight:600}
+  .score-table td{padding:8px 12px;border:1px solid var(--border);color:var(--text-2)}
+  .score-table tr:nth-child(even) td{background:var(--surface-2)}
+  .score-table .ded{font-family:var(--mono);color:var(--block);font-weight:600}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--surface-2);padding:1px 5px;border-radius:4px;color:var(--text)}
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.6;overflow-x:auto;color:var(--text);margin:16px 0}
+  ul{padding-left:20px;margin-bottom:14px}
+  ul li{color:var(--text-2);margin-bottom:6px;font-size:14px}
+  ul li strong{color:var(--text)}
+
+  .footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-3);display:flex;gap:16px;flex-wrap:wrap}
+
+  @media (max-width:780px){
+    .sidebar{display:none}
+    .main{margin-left:0;padding:0 24px 64px}
+    .rule-body{grid-template-columns:1fr}
+    .lifecycle{flex-direction:column}
+    .lc-step{border-right:none;border-bottom:1px solid var(--border)}
+    .lc-step:last-child{border-bottom:none}
+  }
+  @media print{
+    .sidebar{display:none}
+    .main{margin-left:0;padding:0 0 80px;max-width:100%}
+    body{font-size:13px}
+    .card,.agent-card,.rule-card{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="eyebrow">lf-playwright-appetizer</div>
+    <h2>Harness Guide</h2>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Start here</div>
+    <a class="nav-link" href="#what-is-it">What is the Harness?</a>
+    <a class="nav-link sub" href="#how-files-connect">How files connect</a>
+    <a class="nav-link sub" href="#steps">The 9 steps</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Hooks</div>
+    <a class="nav-link" href="#hooks">What are hooks?</a>
+    <a class="nav-link sub" href="#hook-config-gate">Config gate</a>
+    <a class="nav-link sub" href="#hook-dup-guard">Duplication guard</a>
+    <a class="nav-link sub" href="#hook-prewrite">Pre-write check</a>
+    <a class="nav-link sub" href="#hook-postwrite">Post-write check</a>
+    <a class="nav-link sub" href="#hook-session">End-of-session reminder</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Agents</div>
+    <a class="nav-link" href="#agents">What are agents?</a>
+    <a class="nav-link sub" href="#agent-bootstrapper">project-bootstrapper</a>
+    <a class="nav-link sub" href="#agent-cli">playwright-cli</a>
+    <a class="nav-link sub" href="#agent-automation">test-automation</a>
+    <a class="nav-link sub" href="#agent-gate">qa-gate</a>
+    <a class="nav-link sub" href="#agent-bughunter">bug-hunter</a>
+    <a class="nav-link sub" href="#agent-pr">pr-creator</a>
+    <a class="nav-link sub" href="#agent-maintainer">workflow-maintainer</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Rules</div>
+    <a class="nav-link" href="#rules">What are rules?</a>
+    <a class="nav-link sub" href="#rules-blocking">Hard rules (blocking)</a>
+    <a class="nav-link sub" href="#rules-graded">Soft rules (graded)</a>
+  </div>
+</nav>
+
+<main class="main">
+
+  <div class="hero" id="top">
+    <div class="hero-eyebrow">Simple Reference Guide</div>
+    <h1>LF Playwright Harness</h1>
+    <p class="hero-sub">A ready-made setup you plug into any project. It comes with no tests. You point it at your project, describe what the app does, write down what needs to be tested, and the harness guides you — and the AI — to build tests the right way.</p>
+    <div class="hero-meta">
+      <span class="meta-chip"><strong>Tool</strong> Playwright</span>
+      <span class="meta-chip"><strong>Language</strong> TypeScript</span>
+      <span class="meta-chip"><strong>Agents</strong> 7</span>
+      <span class="meta-chip"><strong>Rules</strong> 14</span>
+    </div>
+  </div>
+
+  <!-- ── What is it ── -->
+  <section id="what-is-it">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🧩</div>
+      <h2>What is the Harness?</h2>
+    </div>
+
+    <div class="def-box">
+      <div class="def-label">Simple definition</div>
+      <p>The harness is a <strong>ready-made folder of rules, helpers, and AI assistants</strong> that makes sure tests are written the right way every time. It does not contain any app code. You bring the app; the harness brings the guardrails.</p>
+    </div>
+
+    <p>Think of it as three levels stacked on top of each other:</p>
+    <ul>
+      <li><strong>Level 1 — Playwright:</strong> The tool that actually runs the tests. You do not touch this layer.</li>
+      <li><strong>Level 2 — The Harness (this repo):</strong> The AI assistants, the rules, and the automatic checks that make sure tests are written correctly.</li>
+      <li><strong>Level 3 — Your Project:</strong> The only thing you write. A short description of your app and a list of things that need to be tested.</li>
+    </ul>
+
+    <div class="tip">
+      <strong>To plug in a new project:</strong> Copy the template, fill in your project name, run three commands, then run <code>npm run verify</code>. If it passes with zero tests — you are ready to start.
+    </div>
+
+    <div class="example">
+      <div class="example-label ex-neutral">Example — setting up a new project</div>
+      <pre>cp harness/profiles/projects/_template.json harness/profiles/projects/my-app.json
+# Fill in the name and settings inside my-app.json, then:
+npm run harness:compose
+npm run harness:sync
+npm run harness:check
+npm run verify
+# Expected output: "Running 0 tests using 0 workers" — this is correct</pre>
+    </div>
+
+    <h3 id="how-files-connect">How the files connect</h3>
+    <p>Every file passes information in one direction — from settings all the way to tests. Tests can never skip a level and grab settings directly.</p>
+    <pre>playwright/configs/**            ← button names, page addresses, constants
+        ↓
+playwright/support/helpers/**    ← steps like "log in", "fill form", "check result"
+        ↓
+playwright/fixtures/base.fixture.ts  ← makes helpers available to tests
+        ↓
+playwright/tests/**              ← the actual test — just calls the steps above</pre>
+
+    <h3 id="steps">The 9 steps</h3>
+    <div class="lifecycle">
+      <div class="lc-step"><div class="lc-num">01</div><div class="lc-name">GATHER</div><div class="lc-owner">bootstrapper</div></div>
+      <div class="lc-step"><div class="lc-num">02</div><div class="lc-name">SPECIFY</div><div class="lc-owner">you (human)</div></div>
+      <div class="lc-step"><div class="lc-num">03</div><div class="lc-name">DISCOVER</div><div class="lc-owner">playwright-cli</div></div>
+      <div class="lc-step"><div class="lc-num">04</div><div class="lc-name">BUILD</div><div class="lc-owner">test-automation</div></div>
+      <div class="lc-step"><div class="lc-num">05</div><div class="lc-name">GUARD</div><div class="lc-owner">hooks + CI</div></div>
+      <div class="lc-step"><div class="lc-num">06</div><div class="lc-name">EVALUATE</div><div class="lc-owner">qa-gate</div></div>
+      <div class="lc-step"><div class="lc-num">07</div><div class="lc-name">RUN</div><div class="lc-owner">CI runner</div></div>
+      <div class="lc-step"><div class="lc-num">08</div><div class="lc-name">FIX</div><div class="lc-owner">bug-hunter</div></div>
+      <div class="lc-step"><div class="lc-num">09</div><div class="lc-name">MEASURE</div><div class="lc-owner">evidence:build</div></div>
+    </div>
+
+    <div class="warn">
+      <strong>Step 2 is always done by a human.</strong> No AI can approve a requirement. You must change the status from <code>draft</code> to <code>active</code> in <code>evidence/requirements.json</code> yourself.
+    </div>
+    <div class="example">
+      <div class="example-label ex-neutral">Example — approving a requirement</div>
+      <pre>// evidence/requirements.json  — change "draft" to "active" yourself
+{
+  "id": "LOGIN-001",
+  "title": "User can log in with valid credentials",
+  "status": "active"   // ← you change this manually
+}</pre>
+    </div>
+  </section>
+
+  <!-- ── Hooks ── -->
+  <section id="hooks">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🪝</div>
+      <h2>Hooks</h2>
+    </div>
+
+    <div class="def-box">
+      <div class="def-label">Simple definition</div>
+      <p>A <strong>hook</strong> is a small script that runs automatically at certain moments — before you write a file, after you write a file, or when you send a message. If something is wrong, the hook <strong>stops the action and tells you the problem</strong> before anything gets saved.</p>
+    </div>
+
+    <p>There are four moments when hooks can run:</p>
+    <ul>
+      <li><strong>When you send a message</strong> — checks before the AI starts working</li>
+      <li><strong>Before a file is saved</strong> — checks the file before it touches the disk</li>
+      <li><strong>After a file is saved</strong> — double-checks the saved file</li>
+      <li><strong>When the AI finishes</strong> — shows a reminder checklist</li>
+    </ul>
+
+    <div class="tip"><strong>You do not set up hooks manually.</strong> They are turned on automatically when you run <code>npm run harness:sync</code>.</div>
+
+    <div class="card-grid">
+
+      <div class="card" id="hook-config-gate">
+        <div class="card-head">
+          <span class="card-badge badge-prompt">Runs when you send a message</span>
+          <span class="card-title">harness-config-gate.mjs</span>
+        </div>
+        <p><strong>What it does:</strong> Before the AI does any work, this hook checks that your project setup is complete. If you have not filled in your project details yet, the whole message is stopped and you see a setup guide instead.</p>
+        <p><strong>Why it matters:</strong> Without a complete project profile, the AI would write tests for the wrong app or with the wrong settings.</p>
+        <div class="example">
+          <div class="example-label ex-bad">What happens without a complete profile</div>
+          <pre>You: "Write a test for the login page"
+Hook: ❌ Project profile is incomplete.
+      Fill in harness/profiles/projects/my-app.json
+      then run: npm run harness:compose && npm run harness:sync</pre>
+        </div>
+        <div class="example">
+          <div class="example-label ex-good">What happens with a complete profile</div>
+          <pre>You: "Write a test for the login page"
+Hook: ✅ Profile OK — AI starts working</pre>
+        </div>
+      </div>
+
+      <div class="card" id="hook-dup-guard">
+        <div class="card-head">
+          <span class="card-badge badge-prompt">Runs when you send a message</span>
+          <span class="card-title">prompt-duplication-guard.mjs</span>
+        </div>
+        <p><strong>What it does:</strong> When you ask the AI to create something new (a test, a helper, a selector), this hook automatically adds a reminder: "Search first — does this already exist?" The AI must search for the exact text before writing anything new.</p>
+        <p><strong>Why it matters:</strong> The same button selector could already exist in a config file. Two copies of the same thing mean double the work when the app changes.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">Example — what the hook injects into your message</div>
+          <pre>You said: "Add a helper for the checkout button"
+
+Hook injects: "Before writing anything — search playwright/configs/**
+and playwright/support/helpers/** for the exact selector value.
+If it exists anywhere, reuse it instead of creating a new file."</pre>
+        </div>
+      </div>
+
+      <div class="card" id="hook-prewrite">
+        <div class="card-head">
+          <span class="card-badge badge-prewrite">Runs before a file is saved</span>
+          <span class="card-title">pre-validate-playwright-rules.mjs</span>
+        </div>
+        <p><strong>What it does:</strong> Before any file is saved, this hook reads its content and checks it against all the hard rules. If it finds a problem, the file is <strong>never saved</strong> — the AI gets a clear error message.</p>
+        <p><strong>Why it matters:</strong> Stopping a bad file before it is saved is better than finding the problem later in a code review.</p>
+        <div class="example">
+          <div class="example-label ex-bad">AI tries to save a file with a hard-coded selector</div>
+          <pre>// AI tries to write this to disk:
+await page.click('[data-testid="login-btn"]');
+
+Pre-write hook: ❌ BLOCKED — no-hardcoded-selector rule violated.
+               Use a constant from playwright/configs/ui/** instead.</pre>
+        </div>
+        <div class="example">
+          <div class="example-label ex-good">File with a config constant passes</div>
+          <pre>import { LOGIN_BTN } from '../configs/ui/auth.selectors';
+await page.click(LOGIN_BTN);
+
+Pre-write hook: ✅ No violations — file saved</pre>
+        </div>
+      </div>
+
+      <div class="card" id="hook-postwrite">
+        <div class="card-head">
+          <span class="card-badge badge-postwrite">Runs after a file is saved</span>
+          <span class="card-title">validate-playwright-rules.mjs</span>
+        </div>
+        <p><strong>What it does:</strong> Right after a file is saved, this hook checks it again. It also works in your CI pipeline — you can run it against all files that changed in a pull request.</p>
+        <p><strong>Why it matters:</strong> Catches anything that slipped through, and works as the final check in CI for code written by humans too.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">Running in CI on a pull request</div>
+          <pre>node .claude/hooks/validate-playwright-rules.mjs --base-ref main
+# Checks every changed .ts file in playwright/ against all rules
+# Exit code 1 = violations found, PR blocked
+# Exit code 0 = all clean</pre>
+        </div>
+      </div>
+
+      <div class="card" id="hook-session">
+        <div class="card-head">
+          <span class="card-badge badge-stop">Runs when the AI finishes</span>
+          <span class="card-title">session-end-reminder.mjs</span>
+        </div>
+        <p><strong>What it does:</strong> When the AI is done, if it touched any test files, this hook prints a checklist of things the QA reviewer will check. It reminds you to collect the test run output before asking for a review.</p>
+        <p><strong>Why it matters:</strong> Without the checklist, it is easy to forget to run the tests or collect the lint output. The QA gate needs that evidence to give a verdict.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">Example reminder printed at the end of a session</div>
+          <pre>📋 Session touched test code. Before requesting a gate review, collect:
+
+  ☐ npm test output (all tests passing)
+  ☐ npm run lint output (no errors)
+  ☐ npx tsc --noEmit output (no type errors)
+  ☐ npm run evidence:build output
+
+This is a reminder only — hooks and CI are the real enforcement.</pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Agents ── -->
+  <section id="agents">
+    <div class="section-header">
+      <div class="section-icon icon-green">🤖</div>
+      <h2>Agents</h2>
+    </div>
+
+    <div class="def-box">
+      <div class="def-label">Simple definition</div>
+      <p>An <strong>agent</strong> is an AI assistant that has one specific job. Each agent knows what it is allowed to do and what it is not. They do not overlap. The person who writes the test cannot also be the person who approves it — the same idea applies here.</p>
+    </div>
+
+    <p>There are 7 agents. Each one owns exactly one of the 9 steps. Giving a job to the wrong agent — for example, asking the reviewer to also write the test — breaks the checks that keep the process trustworthy.</p>
+
+    <div class="tip">
+      <strong>Always start with <code>project-bootstrapper</code></strong> when working on a new project or feature. Do not ask <code>playwright-test-automation</code> to write until a requirement is marked <code>active</code>.
+    </div>
+
+    <div class="card-grid">
+
+      <div class="agent-card" id="agent-bootstrapper">
+        <div class="agent-head">
+          <span class="role-pill role-GATHER">GATHER</span>
+          <span class="agent-name">project-bootstrapper</span>
+        </div>
+        <p><strong>Job:</strong> Reads your app and existing documents to understand what the project does. Then writes a description of the app and a first draft of what needs to be tested. Nothing else.</p>
+        <p><strong>When to use:</strong> The very first step on any new project or feature. Nothing runs before this.</p>
+        <p><strong>Not allowed to:</strong> Write tests, helpers, or fixtures. Give a pass or fail decision.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">How to start it</div>
+          <pre>You: "Use project-bootstrapper to gather context for my-app.
+      The app source is at /src and the product docs are in /docs/product"
+
+Agent reads the app → writes docs/application-intelligence/my-app.md
+                    → writes a first draft in evidence/requirements.json</pre>
+        </div>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Can read and write files</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Sonnet</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-cli">
+        <div class="agent-head">
+          <span class="role-pill role-DISCOVER">DISCOVER</span>
+          <span class="agent-name">playwright-cli</span>
+        </div>
+        <p><strong>Job:</strong> Opens the real app in a browser and finds the buttons, fields, and page addresses that tests will need. Saves those as named constants in the config files.</p>
+        <p><strong>When to use:</strong> After <code>project-bootstrapper</code> finishes, before any tests are written. Use it to verify that selectors actually work in the browser.</p>
+        <p><strong>Not allowed to:</strong> Write tests. Give a pass or fail decision.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">What it produces</div>
+          <pre>You: "Use playwright-cli to find the selectors for the login page at /login"
+
+Agent opens the browser → inspects the page → writes:
+// playwright/configs/ui/auth.selectors.ts
+export const EMAIL_INPUT    = '[data-testid="email"]';
+export const PASSWORD_INPUT = '[data-testid="password"]';
+export const LOGIN_BTN      = '[data-testid="login-btn"]';</pre>
+        </div>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Can read files and run browser commands</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Sonnet</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-automation">
+        <div class="agent-head">
+          <span class="role-pill role-BUILD">BUILD</span>
+          <span class="agent-name">playwright-test-automation</span>
+        </div>
+        <p><strong>Job:</strong> Takes one approved requirement and turns it into real test code — config constants, helper steps, and the test file.</p>
+        <p><strong>When to use:</strong> Only after you mark a requirement <code>active</code> in <code>evidence/requirements.json</code>. One requirement per session.</p>
+        <p><strong>Not allowed to:</strong> Approve its own work. Write more than one requirement at a time.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">What it writes for requirement LOGIN-001</div>
+          <pre>playwright/configs/ui/auth.selectors.ts   ← selectors (if not already there)
+playwright/configs/app/routes.ts           ← /login route constant
+playwright/support/helpers/auth.helper.ts ← loginAs(email, password) step
+playwright/tests/auth/login.spec.ts       ← the actual test
+
+// login.spec.ts (simplified)
+test('[LOGIN-001] logs in with valid credentials', async ({ authHelper }) => {
+  await authHelper.loginAs('user@example.com', 'secret');
+  await expect(page).toHaveURL('/dashboard');
+});</pre>
+        </div>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Can read and write files</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Sonnet</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-gate">
+        <div class="agent-head">
+          <span class="role-pill role-EVALUATE">EVALUATE</span>
+          <span class="agent-name">pre-merge-qa-gate</span>
+        </div>
+        <p><strong>Job:</strong> The independent reviewer. Reads the test files and the results of the test run, scores each test out of 100, and gives one verdict: <strong>PASS</strong>, <strong>PASS WITH NOTES</strong>, or <strong>BLOCK</strong>.</p>
+        <p><strong>When to use:</strong> After the test is written and you have the test run output and lint output ready.</p>
+        <p><strong>Not allowed to:</strong> Edit any files. Run any commands. Fix problems itself. It is read-only.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">How to call it</div>
+          <pre>You: "Use pre-merge-qa-gate to evaluate my changes.
+      Here is the diff: [paste diff]
+      Here is npm test output: [paste output]
+      Here is npm run lint output: [paste output]"
+
+Gate reviews → returns:
+  LOGIN-001: 90/100 — PASS
+  Overall verdict: PASS
+  No blockers found.</pre>
+        </div>
+
+        <p style="font-size:13px; margin-top: 14px;">Points taken off per problem found:</p>
+        <table class="score-table">
+          <thead><tr><th>Problem found in the test</th><th>Points off</th></tr></thead>
+          <tbody>
+            <tr><td>Test name is unclear or wrong</td><td class="ded">−15</td></tr>
+            <tr><td>Test type or priority is wrong</td><td class="ded">−15</td></tr>
+            <tr><td>Test depends on another test to run first</td><td class="ded">−20</td></tr>
+            <tr><td>The check at the end is weak or missing</td><td class="ded">−20</td></tr>
+            <tr><td>Code is copied from another test</td><td class="ded">−10</td></tr>
+            <tr><td>Errors are being hidden (bad try/catch)</td><td class="ded">−20</td></tr>
+            <tr><td>Test creates data but does not clean it up</td><td class="ded">−15</td></tr>
+            <tr><td>No link back to a requirement</td><td class="ded">−5</td></tr>
+            <tr><td>Used a CSS selector when a better option existed</td><td class="ded">−10</td></tr>
+            <tr><td>Used a position (1st, 2nd) instead of a name filter</td><td class="ded">−10</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:13px;"><strong>80 points or more is needed to pass.</strong> A broken hard rule blocks the merge even if the score is 100.</p>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Read-only — cannot save files</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Opus</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-bughunter">
+        <div class="agent-head">
+          <span class="role-pill role-DIAGNOSE">DIAGNOSE</span>
+          <span class="agent-name">playwright-bug-hunter</span>
+        </div>
+        <p><strong>Job:</strong> When a test is failing, this agent reads the failure, works out why it happened, and proposes a small, targeted fix.</p>
+        <p><strong>When to use:</strong> When a test is failing and you want to know the real reason, not just a guess.</p>
+        <p><strong>Not allowed to:</strong> Run tests speculatively. Score its own fix.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">How to call it</div>
+          <pre>You: "Use playwright-bug-hunter. This test is failing in CI.
+      Error: Timeout 30000ms exceeded waiting for [data-testid='submit-btn']"
+
+Agent reads the test → checks the selector → checks the page →
+Root cause: The button is inside a dialog that only appears after an API call.
+            The test did not wait for the API response before looking for the button.
+Fix: await page.waitForResponse('**/api/cart'); before clicking.</pre>
+        </div>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Can read, search, and edit files</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Opus</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-pr">
+        <div class="agent-head">
+          <span class="role-pill role-SHIP">SHIP</span>
+          <span class="agent-name">pr-creator</span>
+        </div>
+        <p><strong>Job:</strong> Opens a pull request for you. Looks at all commits on your branch, writes a title, a summary of changes, and a test checklist — following the repo's standard format.</p>
+        <p><strong>When to use:</strong> Once the QA gate gives a PASS and you are ready to send the code for review.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">What it creates</div>
+          <pre>Title: feat(auth): add login test for LOGIN-001
+
+Summary:
+- Adds loginAs() helper to auth.helper.ts
+- Adds login.spec.ts covering the happy-path login flow
+- Selectors added to auth.selectors.ts
+
+Test plan:
+☐ npm test passes locally
+☐ QA gate verdict: PASS (score 90/100)</pre>
+        </div>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Can read files and run git commands</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Sonnet</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-maintainer">
+        <div class="agent-head">
+          <span class="role-pill role-MAINTAIN">MAINTAIN</span>
+          <span class="agent-name">workflow-maintainer</span>
+        </div>
+        <p><strong>Job:</strong> Keeps the harness itself clean. If a script, agent file, or document seems duplicated or unused, this agent helps you decide what to keep and what to remove.</p>
+        <p><strong>When to use:</strong> When the harness feels messy, or when you want to simplify docs or scripts.</p>
+        <div class="example">
+          <div class="example-label ex-neutral">Example conversation</div>
+          <pre>You: "Use workflow-maintainer. We have two files that seem to do the same thing:
+      scripts/check-rules.mjs and .claude/hooks/validate-playwright-rules.mjs"
+
+Agent reads both → compares them →
+"check-rules.mjs is a thin wrapper that calls validate-playwright-rules.mjs.
+ It adds no logic of its own. Safe to delete check-rules.mjs and update
+ any npm scripts that reference it."</pre>
+        </div>
+        <div class="agent-meta">
+          <span class="meta-tag"><span class="dot">●</span> Can read and edit harness files</span>
+          <span class="meta-tag"><span class="dot">●</span> Model: Sonnet</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Rules ── -->
+  <section id="rules">
+    <div class="section-header">
+      <div class="section-icon icon-red">📏</div>
+      <h2>Rules</h2>
+    </div>
+
+    <div class="def-box">
+      <div class="def-label">Simple definition</div>
+      <p>A <strong>rule</strong> is something the harness checks every time a file is saved. There are two kinds. <strong>Hard rules</strong> stop the file from saving if they are broken. <strong>Soft rules</strong> are checked later by the QA reviewer, who takes off points — if the score drops below 80, the merge is blocked.</p>
+    </div>
+
+    <div class="tip">
+      <strong>You do not configure rules per project.</strong> They are inherited automatically. The hooks check hard rules when you save; the QA gate checks soft rules when you ask for a review.
+    </div>
+
+    <h3 id="rules-blocking">Hard rules — the file will not save if these are broken</h3>
+
+    <div class="card-grid">
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">no-hard-wait</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">Telling a test to "wait 5 seconds" is a guess. If the page loads slower one day, the test fails. If it loads faster, the test wastes time. The test should wait for a real signal instead.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad"><code>page.waitForTimeout(5000)</code></span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">Wait for something real — a network call or a visible element</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre>await page.click('#submit');
+await page.waitForTimeout(3000); // hoping the page loaded
+await expect(page.locator('.success')).toBeVisible();</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre>await page.click('#submit');
+await page.waitForResponse('**/api/orders'); // wait for the real signal
+await expect(page.locator('.success')).toBeVisible();</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">no-hardcoded-selector</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">If you write a button's test-id directly in a test, and the developer renames it, you have to search and update every test that mentions it. One config file means one fix.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a selector string directly in a test or helper</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">a named constant from the config files</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre>await page.click('[data-testid="checkout-btn"]'); // hardcoded</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre>import { CHECKOUT_BTN } from '../configs/ui/cart.selectors';
+await page.click(CHECKOUT_BTN);</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">no-hardcoded-route</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">If the URL or API address changes, every test that has it written directly will break. One config file means one place to update.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a URL or API path directly in a test or helper</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">a named constant from the routes config file</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre>await page.goto('/dashboard/settings'); // hardcoded URL</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre>import { ROUTES } from '../configs/app/routes';
+await page.goto(ROUTES.SETTINGS);</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">no-page-object</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">The harness already has configs (for selectors) and helpers (for steps). A page object class does the same job and creates confusion about which file owns what.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a class that wraps page actions</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">a plain function in the helpers folder</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong — page object class</div>
+            <pre>class LoginPage {           // ❌ not allowed
+  async login(email, password) {
+    await this.page.fill('#email', email);
+    await this.page.click('#submit');
+  }
+}</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right — plain helper function</div>
+            <pre>// playwright/support/helpers/auth.helper.ts
+export async function loginAs(page, email, password) {
+  await page.fill(EMAIL_INPUT, email);
+  await page.fill(PASSWORD_INPUT, password);
+  await page.click(LOGIN_BTN);
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">no-credential-literal</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">A password written in a file gets saved to git history forever, even if deleted later. Anyone who ever clones the repo can find it.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a password, API key, or token as plain text</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">read from an environment variable</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre>await loginAs('admin@example.com', 'SuperSecret123'); // ❌ literal password</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre>// .env (gitignored file)
+TEST_PASSWORD=SuperSecret123
+
+// In the test:
+await loginAs('admin@example.com', process.env.TEST_PASSWORD);</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">storage-state-auth</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">If every test logs in before it runs, the whole suite gets slow and breaks whenever the login page changes. Log in once, save the session, and share it.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a login flow inside <code>beforeEach()</code></span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">a <code>storageState</code> setup project that logs in once</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong — logs in before every test</div>
+            <pre>beforeEach(async ({ page }) => {
+  await page.goto('/login');         // ❌ repeated every test
+  await page.fill('#email', '...');
+  await page.click('#submit');
+});</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right — login once, reuse the saved session</div>
+            <pre">// playwright.config.ts
+projects: [
+  { name: 'setup', testMatch: '**/auth.setup.ts' },
+  { name: 'tests', dependencies: ['setup'],
+    use: { storageState: '.auth/user.json' } }
+]</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">base-fixture-import</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">The base fixture is the single place that gives tests access to helpers. Importing directly from Playwright bypasses helpers and breaks the whole chain.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad"><code>import { test } from '@playwright/test'</code> in a test file</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">import from the base fixture</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre>import { test, expect } from '@playwright/test'; // ❌ bypasses the fixture</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre">import { test, expect } from '../fixtures/base.fixture'; // ✅ correct</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">smoke-read-only</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">A smoke test should be safe to run against a live or shared environment at any time. If it creates or deletes data, it could break something real.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">POST, PUT, PATCH, or DELETE requests in a <code>@smoke</code> test</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">read-only checks only; put data changes in an <code>@e2e</code> test</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong — smoke test that creates an order</div>
+            <pre">test('[ORDER-001] creates order', { tag: ['@smoke'] }, async ({ request }) => {
+  const res = await request.post('/api/orders', { ... }); // ❌ write in smoke
+});</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right — smoke test only reads</div>
+            <pre">test('[ORDER-001] shows order list', { tag: ['@smoke'] }, async ({ page }) => {
+  await page.goto(ROUTES.ORDERS);
+  await expect(page.getByRole('table')).toBeVisible(); // ✅ read-only
+});</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">no-sql-literal</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">A SQL query written directly in a test is tied to the current database. If a table is renamed, you have to update every test that mentions it. One config file means one update.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a SQL query string in a test or helper</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">a saved query from the db config, passed to the db helper</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre>const rows = await db.query("SELECT * FROM users WHERE email = $1"); // ❌</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre">// playwright/configs/db/user.queries.ts
+export const GET_USER_BY_EMAIL = 'SELECT * FROM users WHERE email = $1';
+
+// In the helper:
+import { GET_USER_BY_EMAIL } from '../configs/db/user.queries';
+const rows = await db.query(GET_USER_BY_EMAIL, [email]);</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">focused-or-quarantined-test</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val"><code>test.only()</code> makes only that one test run and hides all failures from the rest of the suite in CI. A skipped test with no explanation hides a problem with no one responsible for fixing it.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad"><code>test.only()</code> or a skip with no explanation</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">add a quarantine comment above any skip or fixme</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong</div>
+            <pre">test.only('[LOGIN-001] logs in', async () => { ... }); // ❌ hides other failures
+test.skip('[CART-002] adds to cart', async () => { ... }); // ❌ no explanation</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right</div>
+            <pre">// @quarantine CART-BUG-45: cart API returning 500 in staging, fix in progress
+test.fixme('[CART-002] adds to cart', async () => { ... });</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-block"></span><span class="rule-id">one-requirement-tag</span><span class="sev-badge sev-block">Blocking</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">Every test must be linked to exactly one requirement. No link means the test is orphaned. Two links means the coverage report is confusing. An unknown ID means the link points to nothing.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad">a test with no ID, two IDs, or an unknown ID</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">exactly one known ID in the title and as a tag</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong — no requirement link</div>
+            <pre">test('user can log in', async () => { ... }); // ❌ no ID, no tags</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right — one ID, correct tags</div>
+            <pre">test('[LOGIN-001] logs in with valid credentials',
+  { tag: ['@LOGIN-001', '@smoke', '@P0'] },
+  async ({ authHelper }) => { ... }
+);</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Soft rules -->
+    <h3 id="rules-graded" style="margin-top:40px;">Soft rules — no file is blocked, but points are deducted</h3>
+    <p>These rules are not checked when you save. The QA gate reviewer checks them when you ask for a pull request review. Each problem reduces the test score. Below 80 means the pull request is blocked.</p>
+
+    <div class="card-grid">
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-grade"></span><span class="rule-id">locator-priority</span><span class="sev-badge sev-grade">Graded</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">Some ways of finding a button are more stable. Finding it by its visible label survives a code change. Finding it by a CSS class breaks the moment the class is renamed.</span></div>
+          <div class="rule-field full">
+            <span class="field-label">Preferred order — best to worst</span>
+            <span class="field-val">
+              1. <code>getByRole()</code> — what the element is (button, link, heading)<br>
+              2. <code>getByLabel()</code> — the label next to a form field<br>
+              3. <code>getByText()</code> — visible text on screen<br>
+              4. <code>getByTestId()</code> — a <code>data-testid</code> the developer added<br>
+              5. CSS / XPath — only as a last choice, with a written reason
+            </span>
+          </div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Lower priority — CSS selector (fragile)</div>
+            <pre">await page.locator('.btn-primary.submit').click(); // breaks if class name changes</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Higher priority — by role and name (stable)</div>
+            <pre">await page.getByRole('button', { name: 'Submit order' }).click();</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-grade"></span><span class="rule-id">narrow-before-index</span><span class="sev-badge sev-grade">Graded</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">If you find the "second button on the page" and someone adds a new button above it, your test silently starts checking the wrong button. It still passes but proves nothing.</span></div>
+          <div class="rule-field"><span class="field-label">Do not write</span><span class="field-val bad"><code>.first()</code> or <code>.nth(1)</code> when the element has a unique label</span></div>
+          <div class="rule-field"><span class="field-label">Write instead</span><span class="field-val good">narrow down by content first</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-bad">Wrong — position-based (fragile)</div>
+            <pre">await page.getByRole('button').nth(1).click(); // which button is "second"?</pre>
+          </div>
+          <div class="example">
+            <div class="example-label ex-good">Right — filter by name (stable)</div>
+            <pre">await page.getByRole('button').filter({ hasText: 'Add to cart' }).click();</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-head"><span class="sev-dot dot-grade"></span><span class="rule-id">search-before-create</span><span class="sev-badge sev-grade">Graded</span></div>
+        <div class="rule-body">
+          <div class="rule-field full"><span class="field-label">Why this rule exists</span><span class="field-val">The same selector or page address might already be saved in a config file. Two copies of the same thing means when the app changes, you have to update both.</span></div>
+          <div class="rule-field full"><span class="field-label">The rule</span><span class="field-val">Before creating any new config, helper, or test — search for the exact text value across <code>playwright/configs/**</code> and <code>playwright/support/helpers/**</code>. If you find it anywhere, use the existing one.</span></div>
+        </div>
+        <div style="padding:0 20px 16px">
+          <div class="example">
+            <div class="example-label ex-neutral">How to search before creating</div>
+            <pre"># Search for the selector value before adding it to a new file
+grep -r 'data-testid="checkout-btn"' playwright/configs/ playwright/support/
+
+# If the search finds something → use that existing constant
+# If the search finds nothing → then it's OK to create a new one</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footer">
+    <span>lf-playwright-appetizer · LF Technology</span>
+    <span>Check everything is working: <code>npm run verify</code></span>
+    <span>Settings live in: <code>harness.config.json</code></span>
+  </div>
+
+</main>
+
+<script>
+  const links = document.querySelectorAll('.nav-link');
+  const sections = [...document.querySelectorAll('[id]')];
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
