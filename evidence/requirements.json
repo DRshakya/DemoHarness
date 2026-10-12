@@ -343,6 +343,50 @@
       "source": "Owner specification — cart total accuracy, automationexercise.com. Quantity editing not observed in DISCOVER 2026-10-12 (quantity shown as read-only button); minimum case is quantity=1. Awaiting owner approval."
     },
     {
+      "id": "AE-CART-006",
+      "module": "cart",
+      "title": "clicking View Cart from the add-to-cart modal navigates to the cart page",
+      "acceptanceCriteria": [
+        "After adding a product to the cart, the confirmation modal (#cartModal) is visible",
+        "Clicking the 'View Cart' link inside the modal navigates to /view_cart",
+        "The cart page loads and the added product is present in the cart table"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "A product detail page is loaded and the 'Add to cart' button is accessible",
+        "The add-to-cart confirmation modal (#cartModal) is visible after clicking 'Add to cart'"
+      ],
+      "expectedOutcome": "Browser navigates to /view_cart and the cart table contains the product that was just added",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — cart modal View Cart flow, automationexercise.com. Modal structure verified via DISCOVER 2026-10-12. Ad overlay risk noted. Awaiting owner approval."
+    },
+    {
+      "id": "AE-CART-007",
+      "module": "cart",
+      "title": "clicking Continue Shopping from the add-to-cart modal dismisses the modal and stays on the product detail page",
+      "acceptanceCriteria": [
+        "After adding a product to the cart, the confirmation modal (#cartModal) is visible",
+        "Clicking the 'Continue Shopping' button dismisses the modal",
+        "The product detail page remains visible after dismissal — the URL still matches /product_details/{id}"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "A product detail page is loaded and the 'Add to cart' button is accessible",
+        "The add-to-cart confirmation modal (#cartModal) is visible after clicking 'Add to cart'"
+      ],
+      "expectedOutcome": "The modal closes and the user remains on the same product detail page; no navigation occurs",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — cart modal Continue Shopping flow, automationexercise.com. Modal structure verified via DISCOVER 2026-10-12. Ad overlay risk noted. Awaiting owner approval."
+    },
+    {
       "id": "AE-LOGIN-004",
       "module": "login",
       "title": "submitting an empty login form shows a validation error",
