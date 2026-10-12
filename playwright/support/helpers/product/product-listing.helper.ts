@@ -54,6 +54,22 @@ export class ProductListingHelpers {
     ).toBeVisible();
   }
 
+  async assertNoSearchResults(keyword: string): Promise<void> {
+    await expect(this.page).toHaveURL(
+      new RegExp(
+        `[?&]${PRODUCT_UI.LISTING.SEARCH_PARAM}=${encodeURIComponent(keyword)}`,
+      ),
+    );
+    await expect(
+      this.page.getByRole("heading", {
+        name: PRODUCT_UI.LISTING.SEARCHED_PRODUCTS_HEADING_TEXT,
+      }),
+    ).toBeVisible();
+    await expect(
+      this.page.locator(PRODUCT_UI.LISTING.PRODUCT_CARD_SELECTOR),
+    ).toHaveCount(0);
+  }
+
   async clickFirstViewProductAndGetName(): Promise<string> {
     const firstCard = this.page
       .locator(PRODUCT_UI.LISTING.PRODUCT_CARD_SELECTOR)
