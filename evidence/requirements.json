@@ -127,6 +127,113 @@
       "source": "Owner specification — negative login path, automationexercise.com. Error text verified via DISCOVER 2026-10-08. Owner approved 2026-10-08."
     },
     {
+      "id": "AE-PRODUCT-001",
+      "module": "product",
+      "title": "product listing page loads and displays products",
+      "acceptanceCriteria": [
+        "Navigating to /products returns a page that renders without an error state",
+        "The heading 'All Products' is visible",
+        "At least one product card showing a product name and price is present"
+      ],
+      "preconditions": [
+        "The application base URL https://www.automationexercise.com/ is reachable",
+        "No authenticated session is required — the products page is publicly accessible"
+      ],
+      "expectedOutcome": "The product listing page renders with the 'All Products' heading and at least one product card; no error state is visible",
+      "type": "SMOKE",
+      "priority": "P0",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Owner specification — product module, automationexercise.com. Page structure verified via DISCOVER 2026-10-09. Owner approved 2026-10-09."
+    },
+    {
+      "id": "AE-PRODUCT-002",
+      "module": "product",
+      "title": "product detail page loads and displays correct product information",
+      "acceptanceCriteria": [
+        "Navigating to a known product detail URL (e.g., /product_details/1) renders without an error state",
+        "The product name, price, category, availability, condition, and brand fields are all visible on the page"
+      ],
+      "preconditions": [
+        "The application base URL is reachable",
+        "The target product id exists in the catalog (product_details/1 confirmed as 'Blue Top' during DISCOVER 2026-10-09)",
+        "No authenticated session is required"
+      ],
+      "expectedOutcome": "The product detail page renders all six product metadata fields (name, price, category, availability, condition, brand) without an error state",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Owner specification — product detail page, automationexercise.com. HTML structure verified via DISCOVER 2026-10-09. Product id stability is an open unknown. Owner approved 2026-10-09."
+    },
+    {
+      "id": "AE-PRODUCT-003",
+      "module": "product",
+      "title": "searching for a known keyword returns matching product results",
+      "acceptanceCriteria": [
+        "Entering a keyword in the search input on /products and activating the search button causes the page to display results",
+        "The URL contains the query parameter search={keyword}",
+        "The heading changes to 'Searched Products'",
+        "At least one product card is visible in the results"
+      ],
+      "preconditions": [
+        "The product listing page is loaded and the search input is present",
+        "The keyword used is known to match at least one product in the catalog (e.g., 'dress' returned 9 results during DISCOVER 2026-10-09)",
+        "No authenticated session is required"
+      ],
+      "expectedOutcome": "The page transitions to the search-results view: URL contains ?search={keyword}, heading reads 'Searched Products', and at least one product card is visible",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Owner specification — product search, automationexercise.com. Search behavior verified via DISCOVER 2026-10-09 (keyword 'dress' returned 9 results). Owner approved 2026-10-09."
+    },
+    {
+      "id": "AE-PRODUCT-004",
+      "module": "product",
+      "title": "clicking View Product from the listing navigates to the correct product detail page",
+      "acceptanceCriteria": [
+        "Clicking the 'View Product' link on a product card navigates to the product's detail URL (/product_details/{id})",
+        "The product detail page renders the same product name that appeared on the listing card"
+      ],
+      "preconditions": [
+        "The product listing page is loaded with at least one product card visible",
+        "No authenticated session is required"
+      ],
+      "expectedOutcome": "Browser navigates to /product_details/{id}; the product name on the detail page matches the name shown on the card that was clicked",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Owner specification — product navigation flow, automationexercise.com. Link href pattern /product_details/{id} confirmed via DISCOVER 2026-10-09. Owner approved 2026-10-09."
+    },
+    {
+      "id": "AE-PRODUCT-005",
+      "module": "product",
+      "title": "searching with a keyword that matches no products shows an empty result set",
+      "acceptanceCriteria": [
+        "Submitting a search keyword that matches no catalog product displays the 'Searched Products' heading",
+        "No product cards are rendered in the results area",
+        "The URL contains search={keyword}"
+      ],
+      "preconditions": [
+        "The product listing page is loaded",
+        "The keyword used is verified to match no product in the catalog",
+        "No authenticated session is required"
+      ],
+      "expectedOutcome": "The search-results view renders with 'Searched Products' heading and zero product cards; no error state or crash occurs",
+      "type": "REGRESSION",
+      "priority": "P2",
+      "tier": "e2e",
+      "path": "negative",
+      "status": "draft",
+      "source": "Owner specification — edge case, automationexercise.com. Empty-state message copy is unverified (open unknown in module-context.md). Awaiting owner approval and resolution of the unknown before BUILD."
+    },
+    {
       "id": "AE-LOGIN-004",
       "module": "login",
       "title": "submitting an empty login form shows a validation error",
