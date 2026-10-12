@@ -4,6 +4,8 @@ import { HarHelpers } from "../support/helpers/common/har.helpers";
 import { NavigationHelpers } from "../support/helpers/common/navigation.helpers";
 import { UiHelpers } from "../support/helpers/common/ui.helpers";
 import { LoginHelpers } from "../support/helpers/modules/login.helpers";
+import { ProductListingHelpers } from "../support/helpers/product/product-listing.helper";
+import { ProductDetailHelpers } from "../support/helpers/product/product-detail.helper";
 
 type CustomFixtures = {
   api: ApiHelpers;
@@ -12,6 +14,8 @@ type CustomFixtures = {
   ui: UiHelpers;
   evidence: void;
   loginHelpers: LoginHelpers;
+  productListingHelpers: ProductListingHelpers;
+  productDetailHelpers: ProductDetailHelpers;
 };
 
 export const test = base.extend<CustomFixtures>({
@@ -75,6 +79,12 @@ export const test = base.extend<CustomFixtures>({
   },
   loginHelpers: async ({ page }, use) => {
     await use(new LoginHelpers(page));
+  },
+  productListingHelpers: async ({ page }, use) => {
+    await use(new ProductListingHelpers(page));
+  },
+  productDetailHelpers: async ({ page }, use) => {
+    await use(new ProductDetailHelpers(page));
   },
 });
 
