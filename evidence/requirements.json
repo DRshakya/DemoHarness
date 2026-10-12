@@ -230,8 +230,8 @@
       "priority": "P2",
       "tier": "e2e",
       "path": "negative",
-      "status": "draft",
-      "source": "Owner specification — edge case, automationexercise.com. Empty-state message copy is unverified (open unknown in module-context.md). Awaiting owner approval and resolution of the unknown before BUILD."
+      "status": "active",
+      "source": "Owner specification — edge case, automationexercise.com. Owner approved 2026-10-12."
     },
     {
       "id": "AE-LOGIN-004",
