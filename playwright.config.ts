@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 import { FRAMEWORK_EVIDENCE } from "@configs/app/framework-evidence";
+import { STORAGE_STATE_PATH } from "@configs/app/auth";
 
 /**
  * Load environment-specific config.
@@ -54,5 +55,32 @@ export default defineConfig({
   },
 
   // ── Projects ──
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "setup",
+      testDir: "./playwright/support/setup",
+      testMatch: /auth\.setup\.ts/,
+    },
+    {
+      name: "chromium",
+      testIgnore: /\/cart\//,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
+    },
+    {
+      // Cart tests mutate shared server-side cart state and must run serially.
+      name: "chromium-cart",
+      testMatch: /\/cart\//,
+      fullyParallel: false,
+      workers: 1,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
+    },
+  ],
 });
