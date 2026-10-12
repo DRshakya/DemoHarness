@@ -18,4 +18,22 @@ export const ROUTES = {
      */
     DETAIL: "/product_details/{id}",
   },
+  /**
+   * Cart module routes.
+   * Source: DISCOVER phase — automationexercise.com (2026-10-12)
+   */
+  CART: {
+    /** Shopping cart page — publicly accessible; shows empty state for anonymous users */
+    VIEW: "/view_cart",
+    /**
+     * Checkout page — requires authentication and at least one cart item.
+     * Reached by clicking "Proceed To Checkout" on the cart page.
+     */
+    CHECKOUT: "/checkout",
+    /**
+     * Payment page — reached by clicking "Place Order" on the checkout page.
+     * Not navigated to during DISCOVER to avoid order placement mutation.
+     */
+    PAYMENT: "/payment",
+  },
 } as const;

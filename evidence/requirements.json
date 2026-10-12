@@ -234,6 +234,115 @@
       "source": "Owner specification — edge case, automationexercise.com. Owner approved 2026-10-12."
     },
     {
+      "id": "AE-CART-001",
+      "module": "cart",
+      "title": "cart page loads and shows the correct state for an authenticated user",
+      "acceptanceCriteria": [
+        "Navigating to /view_cart with an active authenticated session returns the page without an error state",
+        "When the cart has at least one item, table#cart_info_table is visible and contains at least one tbody row",
+        "When the cart is empty, the #empty_cart element is visible and the table is not present"
+      ],
+      "preconditions": [
+        "The application base URL https://www.automationexercise.com/ is reachable",
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)"
+      ],
+      "expectedOutcome": "The cart page renders without error; the cart table is visible when items are present, and the #empty_cart element is visible when the cart is empty",
+      "type": "SMOKE",
+      "priority": "P0",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — cart module, automationexercise.com. Page structure verified via DISCOVER 2026-10-12. Awaiting owner approval."
+    },
+    {
+      "id": "AE-CART-002",
+      "module": "cart",
+      "title": "adding a product from the detail page shows the added-to-cart confirmation modal",
+      "acceptanceCriteria": [
+        "Clicking the 'Add to cart' button on a product detail page while authenticated causes the #cartModal to become visible",
+        "The modal heading reads 'Added!'",
+        "The modal body contains the text 'Your product has been added to cart.'",
+        "A 'View Cart' link and a 'Continue Shopping' button are present in the modal"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "The target product detail page (e.g., /product_details/1) is reachable and the 'Add to cart' button is visible",
+        "Any ad overlay that may intercept modal interaction has been dismissed or waited out"
+      ],
+      "expectedOutcome": "The #cartModal appears with heading 'Added!', body confirmation text, a 'View Cart' link, and a 'Continue Shopping' button",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — add-to-cart flow, automationexercise.com. Modal structure (#cartModal, heading, body, links) verified via DISCOVER 2026-10-12. Awaiting owner approval."
+    },
+    {
+      "id": "AE-CART-003",
+      "module": "cart",
+      "title": "cart page displays correct product name, unit price, quantity, and line total for each item",
+      "acceptanceCriteria": [
+        "Each cart item row on /view_cart shows the product name in .cart_description h4 a",
+        "Each row shows the unit price in .cart_price p in the format 'Rs. {amount}'",
+        "Each row shows the quantity in .cart_quantity button.disabled",
+        "Each row shows the line total in .cart_total p.cart_total_price in the format 'Rs. {amount}'"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart before the test (setup step required)",
+        "The known product's name and price are recorded for assertion (e.g., product_details/1 is 'Blue Top' at Rs. 500)"
+      ],
+      "expectedOutcome": "Each cart item row renders product name, unit price, quantity, and line total without any field missing or showing an error state",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — cart display accuracy, automationexercise.com. Row HTML structure verified via DISCOVER 2026-10-12 (product 1 'Blue Top', Rs. 500). Awaiting owner approval."
+    },
+    {
+      "id": "AE-CART-004",
+      "module": "cart",
+      "title": "removing an item from the cart removes its row and shows empty state when the last item is deleted",
+      "acceptanceCriteria": [
+        "Clicking the a.cart_quantity_delete link for a cart item removes that item's tbody row from the DOM",
+        "If the deleted item was the only item, #empty_cart becomes visible and table#cart_info_table is no longer visible"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart before the test",
+        "The cart page /view_cart is loaded with the item visible in the table"
+      ],
+      "expectedOutcome": "The deleted item's row is removed from the cart table without a full page reload; when the last item is removed, #empty_cart is visible and no table is rendered",
+      "type": "REGRESSION",
+      "priority": "P2",
+      "tier": "e2e",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — remove-item flow, automationexercise.com. Async DOM update confirmed in DISCOVER 2026-10-12 (three items deleted sequentially; #empty_cart appeared after last delete). Awaiting owner approval."
+    },
+    {
+      "id": "AE-CART-005",
+      "module": "cart",
+      "title": "cart line total equals unit price multiplied by displayed quantity for each item",
+      "acceptanceCriteria": [
+        "For each cart item row, the numeric value in .cart_total p.cart_total_price equals the numeric value in .cart_price p multiplied by the numeric value in .cart_quantity button.disabled",
+        "The assertion holds for at least one item with quantity 1 (minimum observed case)"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart with a known quantity",
+        "The cart page /view_cart is loaded with the item visible"
+      ],
+      "expectedOutcome": "The line total value matches unit price times quantity for every item row; no arithmetic discrepancy is present",
+      "type": "REGRESSION",
+      "priority": "P2",
+      "tier": "e2e",
+      "path": "positive",
+      "status": "draft",
+      "source": "Owner specification — cart total accuracy, automationexercise.com. Quantity editing not observed in DISCOVER 2026-10-12 (quantity shown as read-only button); minimum case is quantity=1. Awaiting owner approval."
+    },
+    {
       "id": "AE-LOGIN-004",
       "module": "login",
       "title": "submitting an empty login form shows a validation error",
