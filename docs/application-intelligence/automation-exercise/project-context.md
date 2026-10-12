@@ -42,7 +42,7 @@ Notes:
 | --------- | ---------------- | ------ | -------------- |
 | `login`   | Dipankar Shakya  | High   | APPROVED       |
 | `product` | Dipankar Shakya  | Medium | APPROVED       |
-| `cart`    | Dipankar Shakya  | High   | DRAFT          |
+| `cart`    | Dipankar Shakya  | High   | APPROVED       |
 
 ## Unknowns and decisions
 

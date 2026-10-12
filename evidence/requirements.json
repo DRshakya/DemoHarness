@@ -251,8 +251,8 @@
       "priority": "P0",
       "tier": "smoke",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — cart module, automationexercise.com. Page structure verified via DISCOVER 2026-10-12. Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — cart module, automationexercise.com. Page structure verified via DISCOVER 2026-10-12. Owner approved 2026-10-12."
     },
     {
       "id": "AE-CART-002",
@@ -274,8 +274,8 @@
       "priority": "P1",
       "tier": "smoke",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — add-to-cart flow, automationexercise.com. Modal structure (#cartModal, heading, body, links) verified via DISCOVER 2026-10-12. Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — add-to-cart flow, automationexercise.com. Modal structure (#cartModal, heading, body, links) verified via DISCOVER 2026-10-12. Owner approved 2026-10-12."
     },
     {
       "id": "AE-CART-003",
@@ -297,8 +297,8 @@
       "priority": "P1",
       "tier": "smoke",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — cart display accuracy, automationexercise.com. Row HTML structure verified via DISCOVER 2026-10-12 (product 1 'Blue Top', Rs. 500). Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — cart display accuracy, automationexercise.com. Row HTML structure verified via DISCOVER 2026-10-12 (product 1 'Blue Top', Rs. 500). Owner approved 2026-10-12."
     },
     {
       "id": "AE-CART-004",
@@ -318,8 +318,8 @@
       "priority": "P2",
       "tier": "e2e",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — remove-item flow, automationexercise.com. Async DOM update confirmed in DISCOVER 2026-10-12 (three items deleted sequentially; #empty_cart appeared after last delete). Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — remove-item flow, automationexercise.com. Async DOM update confirmed in DISCOVER 2026-10-12 (three items deleted sequentially; #empty_cart appeared after last delete). Owner approved 2026-10-12."
     },
     {
       "id": "AE-CART-005",
@@ -339,8 +339,8 @@
       "priority": "P2",
       "tier": "e2e",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — cart total accuracy, automationexercise.com. Quantity editing not observed in DISCOVER 2026-10-12 (quantity shown as read-only button); minimum case is quantity=1. Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — cart total accuracy, automationexercise.com. Quantity editing not observed in DISCOVER 2026-10-12 (quantity shown as read-only button); minimum case is quantity=1. Owner approved 2026-10-12."
     },
     {
       "id": "AE-CART-006",
@@ -361,8 +361,8 @@
       "priority": "P1",
       "tier": "smoke",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — cart modal View Cart flow, automationexercise.com. Modal structure verified via DISCOVER 2026-10-12. Ad overlay risk noted. Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — cart modal View Cart flow, automationexercise.com. Modal structure verified via DISCOVER 2026-10-12. Ad overlay risk noted. Owner approved 2026-10-12."
     },
     {
       "id": "AE-CART-007",
@@ -383,8 +383,8 @@
       "priority": "P1",
       "tier": "smoke",
       "path": "positive",
-      "status": "draft",
-      "source": "Owner specification — cart modal Continue Shopping flow, automationexercise.com. Modal structure verified via DISCOVER 2026-10-12. Ad overlay risk noted. Awaiting owner approval."
+      "status": "active",
+      "source": "Owner specification — cart modal Continue Shopping flow, automationexercise.com. Modal structure verified via DISCOVER 2026-10-12. Ad overlay risk noted. Owner approved 2026-10-12."
     },
     {
       "id": "AE-LOGIN-004",

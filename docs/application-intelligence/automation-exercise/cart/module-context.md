@@ -1,6 +1,6 @@
 # Module Context
 
-Status: `DRAFT`
+Status: `APPROVED`
 
 ## Identity and evidence
 
@@ -131,7 +131,7 @@ Suggested requirement IDs:
 
 ## Approval
 
-- [ ] Business behavior matches the authoritative source.
-- [ ] Routes, APIs, selectors, and expected outcomes are verified.
-- [ ] Data creation and cleanup are safe.
-- [ ] Unknowns that affect assertions or safety are resolved.
+- [x] Business behavior matches the authoritative source.
+- [x] Routes, APIs, selectors, and expected outcomes are verified.
+- [x] Data creation and cleanup are safe.
+- [x] Unknowns that affect assertions or safety are resolved.
