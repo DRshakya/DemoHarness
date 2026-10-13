@@ -365,6 +365,24 @@ Only after the user answers, either update the spec (intentional change) or file
 
 ---
 
+## Module coverage notes
+
+### Cart (AE-CART-001 – AE-CART-007)
+
+Selectors live in `playwright/configs/ui/modules/cart/cart.ui.ts`. All interactions (add to cart,
+remove, quantity change, modal navigation) are encapsulated in
+`playwright/support/helpers/cart/cart.helper.ts`. Smoke specs are read-only; the two e2e specs
+(AE-CART-004, AE-CART-005) cover mutations. All specs import `{ test, expect }` from
+`playwright/fixtures/base.fixture.ts`.
+
+### Product (AE-PRODUCT-001 – AE-PRODUCT-005)
+
+Selectors live in `playwright/configs/ui/modules/product/product.ui.ts`. Navigation and assertion
+helpers are split into `product-listing.helper.ts` and `product-detail.helper.ts` under
+`playwright/support/helpers/product/`. Both helpers are injected via the base fixture.
+
+---
+
 ## Cross-references
 
 | For...                                         | See                                                  |
