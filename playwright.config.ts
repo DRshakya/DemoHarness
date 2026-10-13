@@ -63,10 +63,20 @@ export default defineConfig({
     },
     {
       name: "chromium",
-      testIgnore: /\/cart\//,
+      testIgnore: [/\/cart\//, /\/login\//],
       use: {
         ...devices["Desktop Chrome"],
         storageState: STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
+    },
+    {
+      // Login tests must run without a stored session so the site doesn't
+      // redirect /login to home before the form renders.
+      name: "chromium-login",
+      testMatch: /\/login\//,
+      use: {
+        ...devices["Desktop Chrome"],
       },
       dependencies: ["setup"],
     },
