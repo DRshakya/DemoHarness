@@ -38,9 +38,12 @@ Notes:
 
 ## Modules
 
-| Module  | Business owner   | Risk   | Context status |
-| ------- | ---------------- | ------ | -------------- |
-| `login` | Dipankar Shakya  | High   | APPROVED       |
+| Module     | Business owner   | Risk   | Context status                    |
+| ---------- | ---------------- | ------ | --------------------------------- |
+| `login`    | Dipankar Shakya  | High   | APPROVED                          |
+| `product`  | Dipankar Shakya  | Medium | APPROVED                          |
+| `cart`     | Dipankar Shakya  | High   | APPROVED                          |
+| `checkout` | Dipankar Shakya  | High   | DRAFT — awaiting owner approval   |
 
 ## Unknowns and decisions
 

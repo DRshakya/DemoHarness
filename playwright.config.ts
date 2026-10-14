@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 import { FRAMEWORK_EVIDENCE } from "@configs/app/framework-evidence";
+import { STORAGE_STATE_PATH } from "@configs/app/auth";
 
 /**
  * Load environment-specific config.
@@ -54,5 +55,57 @@ export default defineConfig({
   },
 
   // ── Projects ──
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "setup",
+      testDir: "./playwright/support/setup",
+      testMatch: /auth\.setup\.ts/,
+    },
+    {
+      name: "chromium",
+      testIgnore: [/\/cart\//, /\/login\//, /\/checkout\//],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
+    },
+    {
+      // Login tests must run without a stored session so the site doesn't
+      // redirect /login to home before the form renders.
+      name: "chromium-login",
+      testMatch: /\/login\//,
+      use: {
+        ...devices["Desktop Chrome"],
+      },
+      dependencies: ["setup"],
+    },
+    {
+      /**
+       * Checkout tests share cart state with the authenticated session and must run
+       * serially. Smoke tests verify page rendering; e2e tests place orders (mutation).
+       */
+      name: "chromium-checkout",
+      testMatch: /\/checkout\//,
+      fullyParallel: false,
+      workers: 1,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
+    },
+    {
+      // Cart tests mutate shared server-side cart state and must run serially.
+      name: "chromium-cart",
+      testMatch: /\/cart\//,
+      fullyParallel: false,
+      workers: 1,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
+    },
+  ],
 });

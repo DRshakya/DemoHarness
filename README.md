@@ -110,3 +110,15 @@ requirement coverage, and five outcome metrics. Missing upstream evidence is rep
 unavailable, never as a misleading zero.
 
 Paid reporting, browser, or device services are optional.
+
+## Covered modules
+
+| Module | Requirements | Auth route | Selectors |
+| --- | --- | --- | --- |
+| Cart | AE-CART-001 – AE-CART-007 | `playwright/configs/app/auth.ts` | `playwright/configs/ui/modules/cart/cart.ui.ts` |
+| Product | AE-PRODUCT-001 – AE-PRODUCT-005 | `playwright/configs/app/auth.ts` | `playwright/configs/ui/modules/product/product.ui.ts` |
+
+Routes are registered in `playwright/configs/app/routes.ts`. The `playwright.config.ts` declares the
+`setup` project (storageState login) and the `chromium-login` project (explicit-credential smoke).
+New modules follow the same pattern: add a routes entry, a UI config, a helper, and specs that import
+from `playwright/fixtures/base.fixture.ts`.

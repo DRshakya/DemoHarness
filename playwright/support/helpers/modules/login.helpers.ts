@@ -24,6 +24,7 @@ export class LoginHelpers {
 
   /** Shared fill-and-submit logic. All credential submission methods delegate here. */
   private async submitCredentials(email: string, password: string): Promise<void> {
+    // locator-strategy: allow-single — login form has exactly one email input, one password input, and one submit button
     await this.page.getByTestId(LOGIN_UI.FORM.EMAIL_INPUT).fill(email);
     await this.page.getByTestId(LOGIN_UI.FORM.PASSWORD_INPUT).fill(password);
     await this.page.getByRole("button", { name: LOGIN_UI.FORM.SUBMIT_BUTTON_NAME }).click();
@@ -53,6 +54,7 @@ export class LoginHelpers {
   }
 
   async submitEmptyForm(): Promise<void> {
+    // locator-strategy: allow-single — single submit button on the login form
     await this.page.getByRole("button", { name: LOGIN_UI.FORM.SUBMIT_BUTTON_NAME }).click();
   }
 
