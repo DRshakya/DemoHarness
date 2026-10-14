@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 import { ROUTES } from "@configs/app/routes";
 import { CART_UI } from "@configs/ui/modules/cart/cart.ui";
+import { CHECKOUT_UI } from "@configs/ui/modules/checkout/checkout.ui";
 import { PRODUCT_UI } from "@configs/ui/modules/product/product.ui";
 
 export class CartHelpers {
@@ -32,10 +33,10 @@ export class CartHelpers {
 
   /** Dismiss the ad overlay modal if it appears, then proceed. */
   private async dismissAdOverlayIfPresent(): Promise<void> {
-    const adModal = this.page.locator("div#checkoutModal");
+    const adModal = this.page.locator(CHECKOUT_UI.AD_OVERLAY.CONTAINER_SELECTOR);
     try {
       await adModal.waitFor({ state: "visible", timeout: 4000 });
-      const closeBtn = adModal.locator("button.close-button, .modal-header button");
+      const closeBtn = adModal.locator(CHECKOUT_UI.AD_OVERLAY.CLOSE_BUTTON_SELECTOR);
       if (await closeBtn.isVisible()) {
         await closeBtn.click();
       } else {

@@ -35,5 +35,11 @@ export const ROUTES = {
      * Not navigated to during DISCOVER to avoid order placement mutation.
      */
     PAYMENT: "/payment",
+    /**
+     * Order confirmation page — URL pattern after a successful payment submission.
+     * Actual URL: /payment_done/{order_id}
+     * Use as a RegExp prefix: new RegExp(ROUTES.CART.PAYMENT_DONE)
+     */
+    PAYMENT_DONE: "/payment_done",
   },
 } as const;

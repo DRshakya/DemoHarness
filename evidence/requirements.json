@@ -405,6 +405,118 @@
       "path": "negative",
       "status": "active",
       "source": "Owner specification — empty-form edge case, automationexercise.com. Client-side HTML5 validation confirmed via DISCOVER 2026-10-08. Owner approved 2026-10-08."
+    },
+    {
+      "id": "AE-CHECKOUT-001",
+      "module": "checkout",
+      "title": "checkout page loads and displays pre-filled delivery address, billing address, and order comment section for an authenticated user with items in cart",
+      "acceptanceCriteria": [
+        "Navigating to /checkout after adding at least one product to the cart returns a page that renders without an error state",
+        "The #address_delivery section is visible and contains address text",
+        "The #address_invoice section is visible and contains address text",
+        "The order comment textarea (textarea.form-control) is visible and accepts text input"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart before the test",
+        "The user has navigated from /view_cart by clicking 'Proceed To Checkout', or /checkout is loaded directly with the session and cart state intact",
+        "The test account has a pre-filled delivery and billing address (required for address sections to render with content)"
+      ],
+      "expectedOutcome": "The checkout page renders at /checkout without error; #address_delivery and #address_invoice sections are visible and contain address text; textarea.form-control is present and editable",
+      "type": "SMOKE",
+      "priority": "P0",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Derived from cart module-context.md (checkout page selectors confirmed via DISCOVER 2026-10-12) and owner specification. Owner approved 2026-10-14. DISCOVER skipped by owner."
+    },
+    {
+      "id": "AE-CHECKOUT-002",
+      "module": "checkout",
+      "title": "payment page loads and displays card detail input fields after clicking Place Order on the checkout page",
+      "acceptanceCriteria": [
+        "Clicking 'Place Order' on /checkout navigates to /payment without an error state",
+        "The payment form is visible and contains fields for name on card, card number, CVC, expiration month, and expiration year",
+        "A payment submission button is present on the page"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart before the test",
+        "The checkout page (/checkout) is loaded with address sections visible (AE-CHECKOUT-001 preconditions met)",
+        "The 'Place Order' button (a.btn.btn-default.check_out) is visible on the checkout page"
+      ],
+      "expectedOutcome": "Browser navigates to /payment; the payment form renders with all expected card-detail fields visible; no error state is shown",
+      "type": "SMOKE",
+      "priority": "P1",
+      "tier": "smoke",
+      "path": "positive",
+      "status": "active",
+      "source": "Derived from cart module-context.md (href='/payment' observed on Place Order link) and owner specification. Owner approved 2026-10-14. DISCOVER skipped by owner."
+    },
+    {
+      "id": "AE-CHECKOUT-003",
+      "module": "checkout",
+      "title": "submitting valid card details on the payment page results in an order confirmation page",
+      "acceptanceCriteria": [
+        "Entering synthetic card values (name, card number, CVC, expiry month, expiry year) in all payment form fields and activating the submission button does not show a payment error",
+        "The browser navigates to an order confirmation page after payment submission",
+        "A success heading or confirmation message is visible on the resulting page"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart before the test",
+        "The payment page (/payment) has been reached via the full checkout flow from /view_cart",
+        "Synthetic card values are known to be accepted by the automationexercise.com payment form (requires DISCOVER to confirm)"
+      ],
+      "expectedOutcome": "After payment form submission, the browser lands on an order confirmation page with a visible success message; no error state or payment rejection message is shown",
+      "type": "REGRESSION",
+      "priority": "P1",
+      "tier": "e2e",
+      "path": "positive",
+      "status": "active",
+      "source": "Derived from owner specification — checkout happy path e2e coverage. Mutation: places a real order on the demo site. Owner approved 2026-10-14. DISCOVER confirmed 2026-10-14."
+    },
+    {
+      "id": "AE-CHECKOUT-004",
+      "module": "checkout",
+      "title": "order confirmation page displays a unique order ID after successful payment submission",
+      "acceptanceCriteria": [
+        "Following a successful payment submission (AE-CHECKOUT-003 preconditions met), the confirmation page displays an order ID or order number",
+        "The displayed order ID is a non-empty string or number that can be read from the DOM"
+      ],
+      "preconditions": [
+        "AE-CHECKOUT-003 preconditions are met and the payment form has been submitted successfully",
+        "The browser has navigated to the order confirmation page"
+      ],
+      "expectedOutcome": "A unique order ID or order number is visible on the confirmation page; it is readable from the DOM and non-empty",
+      "type": "REGRESSION",
+      "priority": "P1",
+      "tier": "e2e",
+      "path": "positive",
+      "status": "active",
+      "source": "Derived from owner specification — confirmation page coverage. Confirmation page route /payment_done/{id} and order ID in URL (not DOM) confirmed. Owner approved 2026-10-14. DISCOVER confirmed 2026-10-14."
+    },
+    {
+      "id": "AE-CHECKOUT-005",
+      "module": "checkout",
+      "title": "order comment entered on the checkout page is accepted without validation error before proceeding to payment",
+      "acceptanceCriteria": [
+        "Entering text in the order comment textarea (textarea.form-control) on /checkout does not produce a validation error",
+        "After entering a comment, clicking 'Place Order' navigates to /payment without an error state",
+        "The textarea accepts free-form text input without character-limit errors for a typical comment length (up to 200 characters)"
+      ],
+      "preconditions": [
+        "A valid authenticated session is established via storageState (TEST_EMAIL / TEST_PASSWORD)",
+        "At least one product has been added to the cart before the test",
+        "The checkout page (/checkout) is loaded with the comment textarea visible (AE-CHECKOUT-001 preconditions met)"
+      ],
+      "expectedOutcome": "Text is entered in the comment textarea without error; clicking 'Place Order' navigates to /payment as expected; no validation rejection is shown",
+      "type": "REGRESSION",
+      "priority": "P2",
+      "tier": "e2e",
+      "path": "positive",
+      "status": "active",
+      "source": "Derived from owner specification — comment textarea on /checkout confirmed via cart module DISCOVER 2026-10-12 (selector textarea.form-control). Navigation to /payment after comment entry confirmed end-to-end. Owner approved 2026-10-14. DISCOVER confirmed 2026-10-14."
     }
   ]
 }

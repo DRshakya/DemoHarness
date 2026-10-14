@@ -63,7 +63,7 @@ export default defineConfig({
     },
     {
       name: "chromium",
-      testIgnore: [/\/cart\//, /\/login\//],
+      testIgnore: [/\/cart\//, /\/login\//, /\/checkout\//],
       use: {
         ...devices["Desktop Chrome"],
         storageState: STORAGE_STATE_PATH,
@@ -77,6 +77,21 @@ export default defineConfig({
       testMatch: /\/login\//,
       use: {
         ...devices["Desktop Chrome"],
+      },
+      dependencies: ["setup"],
+    },
+    {
+      /**
+       * Checkout tests share cart state with the authenticated session and must run
+       * serially. Smoke tests verify page rendering; e2e tests place orders (mutation).
+       */
+      name: "chromium-checkout",
+      testMatch: /\/checkout\//,
+      fullyParallel: false,
+      workers: 1,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE_PATH,
       },
       dependencies: ["setup"],
     },
